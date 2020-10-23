@@ -1,7 +1,5 @@
 package com.lucaryholt.mytodoapp.Repo;
 
-import android.widget.Toast;
-
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -92,6 +90,7 @@ public class Repo {
     public void startListener(){
         col.addSnapshotListener((values, error) -> {
             items.clear();
+            assert values != null;
             for(DocumentSnapshot snap : values.getDocuments()){
                 items.add(new ToDoItem(snap.getId(), (String) snap.get(TITLE), (String) snap.get(TEXT), Boolean.parseBoolean((String) snap.get(DONE))));
             }
