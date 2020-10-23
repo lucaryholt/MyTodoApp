@@ -1,8 +1,10 @@
 package com.lucaryholt.mytodoapp.Model;
 
+import java.util.UUID;
+
 public class ToDoItem {
 
-    private int id;
+    private String id = UUID.randomUUID().toString();
     private String title;
     private String text;
     private boolean done;
@@ -13,14 +15,14 @@ public class ToDoItem {
         this.done = false;
     }
 
-    public ToDoItem(int id, String title, String text) {
+    public ToDoItem(String id, String title, String text, boolean done) {
         this.id = id;
         this.title = title;
         this.text = text;
-        this.done = false;
+        this.done = done;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

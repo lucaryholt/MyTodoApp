@@ -8,27 +8,21 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lucaryholt.mytodoapp.Interface.Updater;
 import com.lucaryholt.mytodoapp.Model.ToDoItem;
 import com.lucaryholt.mytodoapp.R;
-
-import java.util.ArrayList;
+import com.lucaryholt.mytodoapp.Repo.Repo;
 
 public class TodoAdapter extends BaseAdapter {
 
-    private final ArrayList<ToDoItem> items;
     private final LayoutInflater layoutInflater;
-    private final Updater updater;
 
-    public TodoAdapter(Context context, ArrayList<ToDoItem> items, Updater doneClick) {
-        this.items = items;
+    public TodoAdapter(Context context) {
         layoutInflater = LayoutInflater.from(context);
-        this.updater = doneClick;
     }
 
     @Override
     public int getCount() {
-        return items.size();
+        return Repo.r().getItems().size();
     }
 
     @Override
@@ -47,15 +41,20 @@ public class TodoAdapter extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.todorow, null);
         }
         TextView textView = view.findViewById(R.id.todoTextView);
-        textView.setText(items.get(i).getTitle());
+        textView.setText(Repo.r().getItem(i).getTitle());
 
         ImageView imageView = view.findViewById(R.id.doneImage);
         imageView.setOnClickListener((v) -> {
-            items.get(i).toggleDone();
-            updater.update(); // IMPORTANT
+            ToDoItem item = Repo.r().getItem(i);
+            item.toggleDone();
+            Repo.r().updateItem(item.getId(), item.getTitle(), item.getText(), item.isDone());
         });
-        if(items.get(i).isDone()){
+        if(Repo.r().getItem(i).isDone()){
             imageView.setImageResource(R.drawable.checkmark);
+            textView.setTextColor(textView.getResources().getColor(R.color.design_default_color_primary));
+        }else{
+            imageView.setImageResource(R.drawable.checkmarkgrey);
+            textView.setTextColor(textView.getResources().getColor(R.color.design_default_color_secondary));
         }
         return view;
     }

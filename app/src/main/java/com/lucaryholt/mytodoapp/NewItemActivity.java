@@ -7,13 +7,9 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.lucaryholt.mytodoapp.Model.ToDoItem;
-import com.lucaryholt.mytodoapp.Repo.ToDoRepo;
+import com.lucaryholt.mytodoapp.Repo.Repo;
 
 public class NewItemActivity extends AppCompatActivity {
-
-    private final ToDoRepo toDoRepo = ToDoRepo.getInstance();
-    private EditText titleEdit;
-    private EditText textEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +18,10 @@ public class NewItemActivity extends AppCompatActivity {
     }
 
     public void save(View view){
-        titleEdit = findViewById(R.id.newTodoTitle);
-        textEdit = findViewById(R.id.newTodoText);
+        EditText titleEdit = findViewById(R.id.newTodoTitle);
+        EditText textEdit = findViewById(R.id.newTodoText);
 
-        toDoRepo.addItem(new ToDoItem(titleEdit.getText().toString(), textEdit.getText().toString()));
+        Repo.r().addItem(new ToDoItem(titleEdit.getText().toString(), textEdit.getText().toString()));
         finish();
     }
 }
