@@ -47,7 +47,7 @@ public class TodoAdapter extends BaseAdapter {
         imageView.setOnClickListener((v) -> {
             ToDoItem item = Repo.r().getItem(i);
             item.toggleDone();
-            Repo.r().updateItem(item.getId(), item.getTitle(), item.getText(), item.isDone());
+            Repo.r().updateItem(item.getId(), item.getTitle(), item.getText(), item.getImageName(), item.isDone());
         });
         if(Repo.r().getItem(i).isDone()){
             imageView.setImageResource(R.drawable.checkmark);

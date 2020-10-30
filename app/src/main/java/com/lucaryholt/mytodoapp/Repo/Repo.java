@@ -2,6 +2,7 @@ package com.lucaryholt.mytodoapp.Repo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -13,9 +14,13 @@ import com.lucaryholt.mytodoapp.Interface.Toastable;
 import com.lucaryholt.mytodoapp.Interface.Updateable;
 import com.lucaryholt.mytodoapp.Model.ToDoItem;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Repo {
 
@@ -52,12 +57,15 @@ public class Repo {
         return items;
     }
 
-    public void addItem(ToDoItem item){
+    public void addItem(ToDoItem item, Bitmap bitmap){
+        String imageName = UUID.randomUUID().toString();
+
+        // Upload Note
         DocumentReference ref = col.document(item.getId());
         Map<String, String> map = new HashMap<>();
         map.put(TITLE, item.getTitle());
         map.put(TEXT, item.getText());
-        map.put(IMAGENAME, item.getImageName());
+        map.put(IMAGENAME, imageName);
         map.put(DONE, item.isDone() + "");
 
         ref.set(map).addOnCompleteListener(task -> {
@@ -66,6 +74,18 @@ public class Repo {
             }
         });
 
+        // Upload Image
+        StorageReference storageRef = storage.getReference().child(imageName);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        InputStream is = new ByteArrayInputStream(baos.toByteArray());
+
+        storageRef.putStream(is).addOnSuccessListener((task) -> {
+            System.out.println("task complete!");
+        });
+
+        // Show toast
         toastable.showToast("Item " + item.getTitle() + " is added");
     }
 
@@ -78,19 +98,22 @@ public class Repo {
         return getItem(i);
     }
 
-    public void deleteItem(String id){
+    public void deleteItem(String id, String imageName){
         col.document(id).delete();
+
+        storage.getReference().child(imageName).delete();
+
         activity.update(null);
 
         toastable.showToast("Item deleted");
     }
 
-    public void updateItem(String id, String title, String text, boolean done){
+    public void updateItem(String id, String title, String text, String imageName, boolean done){
         DocumentReference ref = col.document(id);
         Map<String, String> map = new HashMap<>();
         map.put(TITLE, title);
         map.put(TEXT, text);
-        map.put(IMAGENAME, ""); //TODO
+        map.put(IMAGENAME, imageName);
         map.put(DONE, done + "");
 
         ref.set(map);
@@ -111,7 +134,7 @@ public class Repo {
 
     public void downloadBitmap(String fileName, Updateable updateable){
         StorageReference ref = storage.getReference(fileName);
-        int max = 1024*1024;
+        int max = 1024*1024*1024;
         ref.getBytes(max).addOnSuccessListener(bytes -> {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             updateable.update(bitmap);

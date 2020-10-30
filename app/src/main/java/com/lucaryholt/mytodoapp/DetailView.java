@@ -46,6 +46,7 @@ public class DetailView extends AppCompatActivity implements Updateable {
         intent.putExtra("id", id);
         intent.putExtra("title", titleString);
         intent.putExtra("text", textString);
+        intent.putExtra("imageName", imageName);
         intent.putExtra("done", done);
         startActivity(intent);
     }
@@ -54,7 +55,7 @@ public class DetailView extends AppCompatActivity implements Updateable {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage("Do you want to delete " + titleString + "?")
                 .setPositiveButton("Yes", (dialog, id) -> {
-                    Repo.r().deleteItem(this.id);
+                    Repo.r().deleteItem(this.id, imageName);
                     finish();
                 })
                 .setNegativeButton("No", (dialog, id) -> {

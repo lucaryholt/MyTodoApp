@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity implements Updateable, Toast
         listView.setOnItemClickListener((_listView, linearLayout, adapterPos, arrPos) -> {
             Intent intent = new Intent(this, DetailView.class);
 
-            //System.out.println(Repo.r().getItem(arrPos));
-
             ToDoItem item = Repo.r().getItem(arrPos);
 
             intent.putExtra("id", item.getId());

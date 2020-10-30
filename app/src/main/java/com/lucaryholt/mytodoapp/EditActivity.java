@@ -16,6 +16,7 @@ public class EditActivity extends AppCompatActivity {
 
     private EditText titleEdit;
     private EditText textEdit;
+    private String imageName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class EditActivity extends AppCompatActivity {
         id = getIntent().getStringExtra("id");
         String title = getIntent().getStringExtra("title");
         String text = getIntent().getStringExtra("text");
+        imageName = getIntent().getStringExtra("imageName");
         done = getIntent().getBooleanExtra("done", false);
 
         titleEdit.setText(title);
@@ -37,7 +39,7 @@ public class EditActivity extends AppCompatActivity {
     public void save(View view){
         String title = titleEdit.getText().toString();
         String text = textEdit.getText().toString();
-        Repo.r().updateItem(id, title, text, done);
+        Repo.r().updateItem(id, title, text, imageName, done);
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
