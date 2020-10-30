@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.lucaryholt.mytodoapp.Adapter.TodoAdapter;
 import com.lucaryholt.mytodoapp.Interface.Toastable;
 import com.lucaryholt.mytodoapp.Interface.Updateable;
+import com.lucaryholt.mytodoapp.Model.ToDoItem;
 import com.lucaryholt.mytodoapp.Repo.Repo;
 
 public class MainActivity extends AppCompatActivity implements Updateable, Toastable {
@@ -30,12 +31,15 @@ public class MainActivity extends AppCompatActivity implements Updateable, Toast
         listView.setOnItemClickListener((_listView, linearLayout, adapterPos, arrPos) -> {
             Intent intent = new Intent(this, DetailView.class);
 
-            System.out.println(Repo.r().getItem(arrPos));
+            //System.out.println(Repo.r().getItem(arrPos));
 
-            intent.putExtra("id", Repo.r().getItem(arrPos).getId());
-            intent.putExtra("title", Repo.r().getItem(arrPos).getTitle());
-            intent.putExtra("text", Repo.r().getItem(arrPos).getText());
-            intent.putExtra("done", Repo.r().getItem(arrPos).isDone());
+            ToDoItem item = Repo.r().getItem(arrPos);
+
+            intent.putExtra("id", item.getId());
+            intent.putExtra("title", item.getTitle());
+            intent.putExtra("text", item.getText());
+            intent.putExtra("imageName", item.getImageName());
+            intent.putExtra("done", item.isDone());
 
             startActivity(intent);
         });
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements Updateable, Toast
     }
 
     protected void onResume() {
-        update();
+        update(null);
         super.onResume();
     }
 
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements Updateable, Toast
     }
 
     @Override
-    public void update() {
+    public void update(Object o) {
         todoAdapter.notifyDataSetChanged();
     }
 

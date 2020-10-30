@@ -4,19 +4,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.lucaryholt.mytodoapp.Interface.Updateable;
 import com.lucaryholt.mytodoapp.Repo.Repo;
 
-public class DetailView extends AppCompatActivity {
-
-    //private final ToDoRepo toDoRepo = ToDoRepo.getInstance();
+public class DetailView extends AppCompatActivity implements Updateable {
 
     private String id;
     private String titleString;
     private String textString;
+    private String imageName;
     private boolean done;
 
     @Override
@@ -30,10 +32,13 @@ public class DetailView extends AppCompatActivity {
         id = getIntent().getStringExtra("id");
         titleString = getIntent().getStringExtra("title");
         textString = getIntent().getStringExtra("text");
+        imageName = getIntent().getStringExtra("imageName");
         done = getIntent().getBooleanExtra("done", false);
 
         title.setText(titleString);
         text.setText(textString);
+
+        Repo.r().downloadBitmap(imageName, this);
     }
 
     public void edit(View view){
@@ -59,5 +64,16 @@ public class DetailView extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.setTitle("Delete");
         alert.show();
+    }
+
+    @Override
+    public void update(Object o) {
+        runOnUiThread(() -> {
+            if(o != null) {
+                Bitmap bitmap = (Bitmap) o;
+                ImageView imageView = findViewById(R.id.imageView);
+                imageView.setImageBitmap(bitmap);
+            }
+        });
     }
 }

@@ -1,5 +1,5 @@
 package com.lucaryholt.mytodoapp.Interface;
 
 public interface Updateable {
-    void update();
+    void update(Object o);
 }
